@@ -1,10 +1,11 @@
+from core.data import fetch_price_data
 import streamlit as st
 import pandas as pd
 from pathlib import Path
 
 st.set_page_config(page_title="Portfolio Risk Assessment", layout="wide")
 
-st.title("📊 Automated Risk Assessment Tool (Week 1 MVP)")
+st.title("📊 Automated Risk Assessment Tool")
 st.caption("Upload a portfolio CSV (ticker, weight).")
 
 st.sidebar.header("Upload Portfolio")
@@ -34,3 +35,78 @@ if not required_cols.issubset(df.columns):
     st.stop()
 
 st.success("Portfolio loaded successfully ✅")
+# ===============================
+# Fetch and Display Price Data
+# ===============================
+
+tickers = df["ticker"].tolist()
+
+st.subheader("📈 Fetching Historical Price Data")
+
+try:
+    price_data = fetch_price_data(tickers)
+
+    st.success("Historical data fetched successfully ✅")
+
+    # 🔍 Debug
+    st.subheader("🔍 Data Points Per Ticker")
+    data_points = price_data.notna().sum().rename("data_points")
+    st.write(data_points)
+
+    # 📊 Normalize prices
+    normalized_data = price_data / price_data.iloc[0] * 100
+    # ===============================
+    # 📈 Daily Returns
+    # ===============================
+
+    returns = price_data.pct_change().dropna()
+
+    st.subheader("📊 Daily Returns (First 5 rows)")
+    st.write(returns.head())
+    # ===============================
+    # 💼 Portfolio Weighted Returns
+    # ===============================
+
+    weights = df.set_index("ticker")["weight"]
+
+    # Ensure correct order
+    weights = weights.loc[returns.columns]
+
+    portfolio_returns = returns.dot(weights)
+
+    st.subheader("📈 Portfolio Daily Returns")
+    st.write(portfolio_returns.rename("portfolio_return").head())
+    # ===============================
+    # 🚀 Portfolio Cumulative Growth
+    # ===============================
+
+    portfolio_cumulative = (1 + portfolio_returns).cumprod()
+
+    st.subheader("🚀 Portfolio Cumulative Performance")
+    st.line_chart(portfolio_cumulative)
+
+    st.subheader("📊 Normalized Price Chart (Base = 100)")
+    st.line_chart(normalized_data)
+    # ===============================
+    # 📌 Summary Metrics
+    # ===============================
+    st.subheader("📌 Summary Metrics")
+
+    trading_days = 252
+
+    avg_daily = portfolio_returns.mean()
+    vol_daily = portfolio_returns.std()
+
+    annual_return = (1 + avg_daily) ** trading_days - 1
+    annual_vol = vol_daily * (trading_days ** 0.5)
+
+    # risk-free assumed 0 for now
+    sharpe = (annual_return / annual_vol) if annual_vol != 0 else 0
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Annual Return", f"{annual_return*100:.2f}%")
+    col2.metric("Annual Volatility", f"{annual_vol*100:.2f}%")
+    col3.metric("Sharpe (rf=0)", f"{sharpe:.2f}")
+
+except Exception as e:
+    st.error(f"Error fetching data: {e}")
