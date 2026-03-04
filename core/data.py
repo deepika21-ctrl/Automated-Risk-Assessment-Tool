@@ -29,4 +29,4 @@ def fetch_price_data(tickers, period_years=2):
         data = data["Close"]
 
     data = data.ffill().bfill()
-return data
+    return data
