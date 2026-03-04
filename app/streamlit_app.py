@@ -85,6 +85,18 @@ try:
     weights = weights.loc[returns.columns]
 
     portfolio_returns = returns.dot(weights)
+    # ==============================
+    # 📊 Portfolio Volatility (Covariance Matrix)
+    # ==============================
+
+    cov_matrix = returns.cov() * 252  # Annualized covariance
+
+    portfolio_volatility = np.sqrt(
+        weights.T @ cov_matrix @ weights
+    )
+
+    st.subheader("📊 Portfolio Volatility (Annualized)")
+    st.write(portfolio_volatility)
 
     st.subheader("📈 Portfolio Daily Returns")
     st.write(portfolio_returns.rename("portfolio_return").head())
