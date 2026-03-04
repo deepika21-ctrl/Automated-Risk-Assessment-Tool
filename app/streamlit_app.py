@@ -86,6 +86,18 @@ try:
 
     portfolio_returns = returns.dot(weights)
     # ==============================
+    # 📈 Cumulative Growth (Assets + Portfolio)
+    # ==============================
+
+    asset_cum = (1 + returns).cumprod()
+    portfolio_cum = (1 + portfolio_returns).cumprod()
+
+    st.subheader("📈 Cumulative Growth (Assets)")
+    st.line_chart(asset_cum)
+
+    st.subheader("📈 Cumulative Growth (Portfolio)")
+    st.line_chart(portfolio_cum)
+    # ==============================
     # 📊 Portfolio Volatility (Covariance Matrix)
     # ==============================
 
