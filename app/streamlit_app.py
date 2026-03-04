@@ -60,6 +60,18 @@ try:
     # ===============================
 
     returns = price_data.pct_change().dropna()
+    import numpy as np
+
+    # --- Volatility (Annualized) ---
+    # Daily volatility = std of daily returns
+    # Annualized volatility = daily vol * sqrt(252 trading days)
+    if returns.empty:
+        st.warning("Not enough data to calculate volatility yet.")
+    else:
+        vol_annual = returns.std() * np.sqrt(252)
+
+        st.subheader("Volatility (Annualized Risk)")
+        st.dataframe(vol_annual.rename("Volatility"))
 
     st.subheader("📊 Daily Returns (First 5 rows)")
     st.write(returns.head())
