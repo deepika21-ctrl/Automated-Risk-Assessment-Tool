@@ -133,16 +133,16 @@ try:
     avg_daily = portfolio_returns.mean()
     vol_daily = portfolio_returns.std()
 
-    annual_return = (1 + avg_daily) ** trading_days - 1
+    annual_return = avg_daily * trading_days
     annual_vol = vol_daily * (trading_days ** 0.5)
 
     # risk-free assumed 0 for now
     sharpe = (annual_return / annual_vol) if annual_vol != 0 else 0
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Annual Return", f"{annual_return*100:.2f}%")
-    col2.metric("Annual Volatility", f"{annual_vol*100:.2f}%")
-    col3.metric("Sharpe (rf=0)", f"{sharpe:.2f}")
+    col1.metric("📈 Annual Return", f"{annual_return*100:.2f}%")
+    col2.metric("📉 Annual Volatility", f"{annual_vol*100:.2f}%")
+    col3.metric("⚡ Sharpe Ratio (rf=0)", f"{sharpe:.2f}")
 
 except Exception as e:
     st.error(f"Error fetching data: {e}")
