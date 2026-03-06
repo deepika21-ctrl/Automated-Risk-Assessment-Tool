@@ -3,6 +3,7 @@ import sys
 import streamlit as st
 import pandas as pd
 import numpy as np
+
 from pathlib import Path
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -59,6 +60,11 @@ try:
     data_points = price_data.notna().sum().rename("data_points")
     st.write(data_points)
     returns = price_data.pct_change().dropna()
+    # Covariance matrix
+    cov_matrix = returns.cov()
+
+    # Portfolio volatility
+    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
 
     # 📊 Normalize prices
     normalized_data = price_data / price_data.iloc[0] * 100
