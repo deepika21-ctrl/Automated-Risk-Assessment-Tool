@@ -63,7 +63,7 @@ try:
     # 📊 Normalize prices
     normalized_data = price_data / price_data.iloc[0] * 100
    
-   
+
     # --- Volatility (Annualized) ---
     # Daily volatility = std of daily returns
     # Annualized volatility = daily vol * sqrt(252 trading days)
@@ -114,6 +114,8 @@ try:
 
     st.subheader("📈 Portfolio Daily Returns")
     st.write(portfolio_returns.rename("portfolio_return").head())
+    # 95% Value at Risk (VaR)
+    var_95 = portfolio_returns.quantile(0.05)
     # ===============================
     # 🚀 Portfolio Cumulative Growth
     # ===============================
@@ -141,10 +143,11 @@ try:
     # risk-free assumed 0 for now
     sharpe = (annual_return / annual_vol) if annual_vol != 0 else 0
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     col1.metric("📈 Annual Return", f"{annual_return*100:.2f}%")
     col2.metric("📉 Annual Volatility", f"{annual_vol*100:.2f}%")
     col3.metric("⚡ Sharpe Ratio (rf=0)", f"{sharpe:.2f}")
+    col4.metric("⚠️ 95% VaR (Daily)", f"{var_95*100:.2f}%")
 
 except Exception as e:
     st.error(f"Error fetching data: {e}")
