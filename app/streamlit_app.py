@@ -1,7 +1,13 @@
-from core.data import fetch_price_data
+import os
+import sys
 import streamlit as st
 import pandas as pd
+import numpy as np
 from pathlib import Path
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from core.data import fetch_price_data
 
 st.set_page_config(page_title="Portfolio Risk Assessment", layout="wide")
 
@@ -52,16 +58,12 @@ try:
     st.subheader("🔍 Data Points Per Ticker")
     data_points = price_data.notna().sum().rename("data_points")
     st.write(data_points)
+    returns = price_data.pct_change().dropna()
 
     # 📊 Normalize prices
     normalized_data = price_data / price_data.iloc[0] * 100
-    # ===============================
-    # 📈 Daily Returns
-    # ===============================
-
-    returns = price_data.pct_change().dropna()
-    import numpy as np
-
+   
+   
     # --- Volatility (Annualized) ---
     # Daily volatility = std of daily returns
     # Annualized volatility = daily vol * sqrt(252 trading days)
@@ -101,7 +103,7 @@ try:
     # 📊 Portfolio Volatility (Covariance Matrix)
     # ==============================
 
-    cov_matrix = returns.cov() * 252  # Annualized covariance
+    cov_matrix = returns.cov() * 252  
 
     portfolio_volatility = np.sqrt(
         weights.T @ cov_matrix @ weights
