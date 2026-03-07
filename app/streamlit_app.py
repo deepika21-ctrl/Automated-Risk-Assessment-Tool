@@ -60,12 +60,8 @@ try:
     data_points = price_data.notna().sum().rename("data_points")
     st.write(data_points)
     returns = price_data.pct_change().dropna()
-    # Covariance matrix
-    cov_matrix = returns.cov()
-
-    # Portfolio volatility
-    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
-
+    
+    
     # 📊 Normalize prices
     normalized_data = price_data / price_data.iloc[0] * 100
    
@@ -91,6 +87,12 @@ try:
 
     # Ensure correct order
     weights = weights.loc[returns.columns]
+    # Covariance matrix
+    cov_matrix = returns.cov()
+
+    # Portfolio volatility
+    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
+
 
     portfolio_returns = returns.dot(weights)
     # ==============================
