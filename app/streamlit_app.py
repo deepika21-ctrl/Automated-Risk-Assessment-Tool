@@ -26,6 +26,7 @@ risk_free_rate = st.sidebar.number_input(
     max_value=20.0,
     value=4.0
 )
+risk_free_rate = risk_free_rate / 100
 
 df = None
 if uploaded is not None and not use_sample:
@@ -123,6 +124,7 @@ try:
         weights.T @ cov_matrix @ weights
     )
     annual_portfolio_volatility = portfolio_volatility * np.sqrt(252)
+    sharpe_ratio = (portfolio_return - risk_free_rate) / annual_portfolio_volatility
 
     st.subheader("📊 Portfolio Volatility (Annualized)")
     st.write(annual_portfolio_volatility)
