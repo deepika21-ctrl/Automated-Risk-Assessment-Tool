@@ -102,6 +102,7 @@ try:
 
 
     portfolio_returns = returns.dot(weights)
+    portfolio_return = portfolio_returns.mean() * 252
     # ==============================
     # 📈 Cumulative Growth (Assets + Portfolio)
     # ==============================
@@ -128,6 +129,8 @@ try:
 
     st.subheader("📊 Portfolio Volatility (Annualized)")
     st.write(annual_portfolio_volatility)
+    st.subheader("⚡ Sharpe Ratio")
+    st.write(sharpe_ratio)
 
     st.subheader("📈 Portfolio Daily Returns")
     st.write(portfolio_returns.rename("portfolio_return").head())
