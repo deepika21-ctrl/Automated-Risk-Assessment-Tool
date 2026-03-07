@@ -20,6 +20,12 @@ uploaded = st.sidebar.file_uploader("Portfolio CSV", type=["csv"])
 
 sample_path = Path("data/sample_portfolio.csv")
 use_sample = st.sidebar.checkbox("Use sample portfolio", value=(uploaded is None))
+risk_free_rate = st.sidebar.number_input(
+    "Risk Free Rate (%)",
+    min_value=0.0,
+    max_value=20.0,
+    value=4.0
+)
 
 df = None
 if uploaded is not None and not use_sample:
