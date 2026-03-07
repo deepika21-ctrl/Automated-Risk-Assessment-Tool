@@ -61,7 +61,7 @@ try:
     st.write(data_points)
     returns = price_data.pct_change().dropna()
     
-    
+
     # 📊 Normalize prices
     normalized_data = price_data / price_data.iloc[0] * 100
    
@@ -111,14 +111,15 @@ try:
     # 📊 Portfolio Volatility (Covariance Matrix)
     # ==============================
 
-    cov_matrix = returns.cov() * 252  
+    cov_matrix = returns.cov()  
 
     portfolio_volatility = np.sqrt(
         weights.T @ cov_matrix @ weights
     )
+    annual_portfolio_volatility = portfolio_volatility * np.sqrt(252)
 
     st.subheader("📊 Portfolio Volatility (Annualized)")
-    st.write(portfolio_volatility)
+    st.write(annual_portfolio_volatility)
 
     st.subheader("📈 Portfolio Daily Returns")
     st.write(portfolio_returns.rename("portfolio_return").head())
