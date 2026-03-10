@@ -145,6 +145,9 @@ try:
     # 95% Value at Risk (VaR)
     var_95 = portfolio_returns.quantile(0.05)
     cvar_95 = portfolio_returns[portfolio_returns <= var_95].mean()
+    st.subheader("Risk Metrics")
+    st.write(f"95% Value at Risk (VaR): {var_95:.2%}")
+    st.write(f"95% Conditional Value at Risk (CVaR): {cvar_95:.2%}")
     # ===============================
     # Portfolio Cumulative Growth
     # ===============================
