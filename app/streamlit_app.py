@@ -148,6 +148,8 @@ try:
     st.subheader("Risk Metrics")
     st.write(f"95% Value at Risk (VaR): {var_95:.2%}")
     st.write(f"95% Conditional Value at Risk (CVaR): {cvar_95:.2%}")
+    st.info(f"VaR means that on the worst 5% of days, the portfolio could lose about {abs(var_95):.2%} or more.")
+    st.warning(f"CVaR means that during those worst-case days, the average loss could be around {abs(cvar_95):.2%}.")
     # ===============================
     # Portfolio Cumulative Growth
     # ===============================
