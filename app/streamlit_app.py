@@ -4,6 +4,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from pathlib import Path
 
@@ -170,6 +171,15 @@ try:
     fig, ax = plt.subplots()
     ax.pie(allocation_data, labels=allocation_data.index, autopct="%1.1f%%")
     ax.axis("equal")
+
+    st.pyplot(fig)
+
+    st.subheader("Asset Correlation Heatmap")
+
+    correlation_matrix = returns.corr()
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", ax=ax)
 
     st.pyplot(fig)
     # ===============================
