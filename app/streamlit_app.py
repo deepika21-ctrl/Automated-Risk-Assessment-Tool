@@ -3,6 +3,7 @@ import sys
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 from pathlib import Path
 
@@ -161,6 +162,16 @@ try:
 
     st.subheader("Normalized Price Chart (Base = 100)")
     st.line_chart(normalized_data)
+
+    st.subheader("Portfolio Allocation")
+
+    allocation_data = df.set_index("ticker")["weight"]
+
+    fig, ax = plt.subplots()
+    ax.pie(allocation_data, labels=allocation_data.index, autopct="%1.1f%%")
+    ax.axis("equal")
+
+    st.pyplot(fig)
     # ===============================
     # Summary Metrics
     # ===============================
