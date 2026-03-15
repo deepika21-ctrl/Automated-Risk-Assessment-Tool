@@ -68,6 +68,8 @@ st.subheader("Data Points Per Ticker")
 data_points = price_data.notna().sum().rename("data_points")
 st.write(data_points)
 returns = price_data.pct_change().dropna()
+asset_returns = returns.mean() * 252
+asset_volatility = returns.std() * (252 ** 0.5)
     
 
 # Normalize prices
@@ -210,6 +212,30 @@ ax.pie(allocation_data, labels=allocation_data.index, autopct="%1.1f%%")
 ax.axis("equal")
 
 st.pyplot(fig)
+
+st.subheader("Portfolio Summary Table")
+
+summary_df = pd.DataFrame({
+    "Ticker": tickers,
+    "Weight": weights,
+    "Annual Return": asset_returns.values,
+    "Annual Volatility": asset_volatility.values
+})
+
+summary_df["Weight"] = summary_df["Weight"].map(lambda x: f"{x:.2%}")
+summary_df["Annual Return"] = summary_df["Annual Return"].map(lambda x: f"{x:.2%}")
+summary_df["Annual Volatility"] = summary_df["Annual Volatility"].map(lambda x: f"{x:.2%}")
+
+st.dataframe(summary_df)
+
+csv = summary_df.to_csv(index=False).encode("utf-8")
+
+st.download_button(
+    label="Download Portfolio Summary CSV",
+    data=csv,
+    file_name="portfolio_summary.csv",
+    mime="text/csv"
+)
     
 st.subheader("Asset Correlation Heatmap")
 
