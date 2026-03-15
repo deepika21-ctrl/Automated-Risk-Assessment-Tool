@@ -152,6 +152,12 @@ st.write(f"95% Conditional Value at Risk (CVaR): {cvar_95:.2%}")
 st.info(f"VaR means that on the worst 5% of days, the portfolio could lose about {abs(var_95):.2%} or more.")
 st.warning(f"CVaR means that during those worst-case days, the average loss could be around {abs(cvar_95):.2%}.")
 
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Expected Return", f"{portfolio_return:.2%}")
+col2.metric("Volatility", f"{portfolio_volatility:.2%}")
+col3.metric("Sharpe Ratio", f"{sharpe_ratio:.2f}")
+
 st.subheader("Portfolio Insights")
 
 # Risk interpretation
