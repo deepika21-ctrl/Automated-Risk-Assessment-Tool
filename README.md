@@ -1,195 +1,168 @@
-# 📊 Automated Risk Assessment Tool for Portfolio Optimization
+# 🎯 Automated Risk Assessment Tool for Portfolio Optimization
 
-An AI-powered portfolio risk analysis and optimization system built using Python, Streamlit, and financial market data APIs.
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.31-red.svg)](https://streamlit.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Compatible-326CE5.svg)](https://kubernetes.io/)
 
-This project aims to automate portfolio stress testing, risk forecasting, and allocation optimization for diverse asset classes such as stocks, bonds, and cryptocurrencies.
-
----
-
-## 🚀 Problem Statement
-
-Portfolio managers in quantitative finance struggle to assess risk in volatile markets, especially when dealing with diversified portfolios across multiple asset classes.
-
-Manual risk calculations:
-- Are time-consuming  
-- Are error-prone  
-- Do not scale for large portfolios  
-- Cannot efficiently simulate multiple market scenarios  
-
-This project solves that by building an automated risk analysis and scenario simulation tool.
+**AI-Powered Portfolio Risk Assessment with LLM Scenario Generation & Monte Carlo Simulation**
 
 ---
 
-## 🎯 Project Objectives
+## 📋 Table of Contents
 
-- Automate portfolio risk analysis
-- Enable scenario-based stress testing
-- Optimize portfolio allocation
-- Integrate LLMs for intelligent scenario interpretation (Upcoming)
-- Design for scalable deployment using Docker & Kubernetes (Upcoming)
-
----
-
-## 🏗 Current Progress (Week 1 MVP)
-
-✔ Streamlit-based user interface  
-✔ Portfolio CSV upload  
-✔ Sample portfolio support  
-✔ Input validation  
-✔ Clean project architecture  
-✔ GitHub version control integration  
+- [Problem Statement](#-problem-statement)
+- [Solution Overview](#-solution-overview)
+- [Key Features](#-key-features)
+- [Tech Stack](#-tech-stack)
+- [Architecture](#-architecture)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Kubernetes Deployment](#-kubernetes-deployment)
+- [Project Structure](#-project-structure)
 
 ---
 
-## 📂 Project Structure
+## 🎯 Problem Statement
 
-```
-Risk-Assessment-Tool/
-│
-├── app/                     # Streamlit UI application
-│   └── streamlit_app.py
-│
-├── core/                    # Risk & optimization logic (Upcoming)
-│
-├── data/                    # Sample portfolio CSV
-│   └── sample_portfolio.csv
-│
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
+Portfolio managers in quantitative finance face significant challenges:
+
+1. **Manual Risk Assessment**: Error-prone and time-consuming
+2. **Volatile Markets**: Difficulty predicting asset behavior across diverse portfolios (stocks, bonds, crypto)
+3. **Scenario Analysis**: Limited ability to test "what-if" scenarios at scale
+4. **Computational Limits**: Cannot run large-scale simulations quickly
+5. **Suboptimal Allocations**: Leading to higher exposure to losses
+
+**Real-World Impact**: The 2022 market crash demonstrated the critical need for automated, intelligent risk assessment tools.
 
 ---
 
-## 📥 Portfolio CSV Format
+## 💡 Solution Overview
 
-The uploaded portfolio must follow this structure:
+This project delivers an **AI-powered web application** that:
 
-```csv
-ticker,weight
-AAPL,0.25
-MSFT,0.25
-GOOGL,0.20
-TLT,0.20
-BTC-USD,0.10
-```
-
-Rules:
-- Must contain columns: `ticker` and `weight`
-- Weights should sum to 1.0
+1. **Generates Market Scenarios** using Large Language Models (LLMs)
+2. **Optimizes Portfolios** using Modern Portfolio Theory (MPT)
+3. **Runs Monte Carlo Simulations** (10,000+ iterations) for stress testing
+4. **Scales with Kubernetes** for multi-user, compute-intensive workloads
 
 ---
 
-## 🛠 Tech Stack
+## ✨ Key Features
 
-### Core Technologies
-- Python
-- Streamlit
-- Pandas
-- NumPy
-- yFinance (Yahoo Finance API)
+### 🤖 AI-Powered Analysis
+- LLM Scenario Generation using Hugging Face
+- Natural Language Risk Interpretation
+- Market condition forecasting
 
-### Dev & Deployment
-- Git & GitHub
-- Virtual Environments (.venv)
-- (Upcoming) Docker
-- (Upcoming) Kubernetes
+### 📊 Portfolio Optimization
+- Modern Portfolio Theory (MPT) implementation
+- Efficient Frontier calculation
+- Maximum Sharpe Ratio portfolio
+- Minimum Variance portfolio
 
-### AI Integration (Upcoming)
-- Hugging Face LLMs
-- Prompt engineering for scenario simulation
+### 🎲 Monte Carlo Simulation
+- 10,000+ simulations for robust forecasting
+- Value at Risk (VaR) & CVaR calculation
+- Path visualization
+
+### ⚠️ Stress Testing
+- Multiple scenario analysis
+- Custom stress tests
+- Probability distributions
 
 ---
 
-## ▶️ How to Run Locally
+## 🛠️ Tech Stack
 
-### 1️⃣ Clone the Repository
+| Component | Technology |
+|-----------|-----------|
+| Frontend | Streamlit |
+| Backend | Python 3.11+ |
+| LLM | Hugging Face API |
+| Optimization | SciPy |
+| Data | NumPy, Pandas |
+| Visualization | Plotly, Matplotlib |
+| Market Data | yfinance |
+| Container | Docker |
+| Orchestration | Kubernetes + HPA |
+
+---
+
+## 📦 Installation
+
+### Local Setup
 
 ```bash
+# Clone repository
 git clone https://github.com/deepika21-ctrl/Automated-Risk-Assessment-Tool.git
 cd Automated-Risk-Assessment-Tool
-```
 
-### 2️⃣ Create Virtual Environment
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate
 
-Windows:
-```bash
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
-
-Mac/Linux:
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-### 3️⃣ Install Dependencies
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
+
+# Set up environment
+cp .env.example .env
+# Edit .env and add HUGGINGFACE_API_KEY
+
+# Run application
+streamlit run app/streamlit_app_enhanced.py
 ```
 
-### 4️⃣ Run the Application
+---
+
+## 🚀 Usage
+
+1. **Upload Portfolio**: CSV with `ticker` and `weight` columns
+2. **Adjust Parameters**: Risk-free rate, confidence levels
+3. **Explore Tabs**: Analysis, Optimization, AI Scenarios, Simulations
+
+---
+
+## ☸️ Kubernetes Deployment
 
 ```bash
-streamlit run app/streamlit_app.py
+# Build image
+docker build -t risk-assessment-tool:latest .
+
+# Create secrets
+kubectl create secret generic risk-assessment-secrets \
+  --from-literal=huggingface-api-key=YOUR_KEY
+
+# Deploy
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/hpa.yaml
 ```
 
-Open in browser:
+---
+
+## 📁 Project Structure
+
 ```
-http://localhost:8501
+├── app/                    # Streamlit applications
+├── core/                   # Core modules
+│   ├── config.py          # Configuration
+│   ├── optimization.py    # MPT optimization
+│   ├── llm_integration.py # LLM scenarios
+│   └── monte_carlo.py     # Simulations
+├── k8s/                   # Kubernetes configs
+├── Dockerfile             # Container definition
+└── requirements.txt       # Dependencies
 ```
 
 ---
 
-## 🔮 Upcoming Features
+## 👨‍💻 Author
 
-- Historical price data fetching
-- Portfolio return computation
-- Volatility calculation
-- Value at Risk (VaR)
-- Conditional VaR (CVaR)
-- Sharpe Ratio computation
-- Scenario-based stress testing
-- Portfolio optimization engine
-- LLM-driven market scenario generation
-- Multi-container Docker deployment
-- Kubernetes orchestration with autoscaling
+**Deepika** - [@deepika21-ctrl](https://github.com/deepika21-ctrl)
 
 ---
 
-## 🌍 Real-World Impact
-
-This system can be used by:
-
-- Investment analysts
-- Quantitative researchers
-- FinTech startups
-- Portfolio managers
-- Banking institutions
-
-It helps reduce portfolio exposure during extreme events such as market crashes or interest rate shocks.
-
----
-
-## 👩‍💻 Author
-
-**Deepika Yadav**  
-B.Tech Computer Science Engineering  
-Focused on AI, Quant Finance & Scalable Systems  
-
----
-
-## ⭐ Future Vision
-
-Transform this tool into a full-scale AI-powered portfolio intelligence platform with:
-
-- Real-time risk monitoring
-- Cloud-native scaling
-- Automated strategy optimization
-- Interactive financial analytics dashboard
-
----
-
-If you find this project interesting, feel free to ⭐ star the repository.
+<div align="center">
+  <strong>Built with ❤️ for Quant Finance</strong>
+</div>
