@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: risk-assessment-deployment
+  labels:
+    app: risk-assessment
+spec:
+  replicas: 3  # Start with 3 replicas for load balancing
+  selector:
+    matchLabels:
+      app: risk-assessment
+  template:
+    metadata:
+      labels:
+        app: risk-assessment
+    spec:
+      containers:
+      - name: streamlit-app
+        image: risk-assessment-tool:latest
+        ports:
+        - containerPort: 8501
+        env:
+        - name: HUGGINGFACE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: risk-assessment-secrets
+              key: huggingface-api-key
+        - name: APP_ENV
+          value: "production"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8501
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8501
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: risk-assessment-pvc
