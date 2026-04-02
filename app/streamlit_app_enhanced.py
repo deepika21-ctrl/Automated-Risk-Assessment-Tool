@@ -44,67 +44,57 @@ st.markdown("""
 
   /* Hide streamlit chrome */
   #MainMenu, footer, header { visibility: hidden; }
-  /* Kill ALL top padding so the login logo sits at the very top-centre */
-  .block-container { padding: 0 2.5rem 3rem !important; }
-  /* Also strip the inner stVerticalBlock gap that adds extra space */
-  .stVerticalBlock { gap: 0 !important; }
+  /* Kill Streamlit's default top block padding – targets all known selectors */
+  .block-container,
+  [data-testid="stAppViewBlockContainer"],
+  [data-testid="stVerticalBlock"] > div:first-child { padding-top: 0 !important; }
+  /* Remove extra gaps between vertical block children on login */
+  .login-page-col > div { gap: 0 !important; }
 
   /* ── LOGIN PAGE ── */
-  /* Full-screen centred column for all login content */
-  .login-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;      /* use full viewport height */
-    margin-top: -3rem;      /* pull up past block-container padding */
-    gap: 0;
-    text-align: center;     /* centre all inline/text children */
-  }
+  /* The entire login screen is centred using st.columns;
+     these classes style the visual elements only */
   .login-logo {
     font-family: 'Orbitron', sans-serif;
-    font-size: 3.2rem; font-weight: 900;
+    font-size: 2.8rem; font-weight: 900;
     background: linear-gradient(135deg, #00d2ff, #7b2ff7);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    letter-spacing: 5px; margin-bottom: .4rem;
+    letter-spacing: 5px;
+    display: block; text-align: center;
+    margin-bottom: .35rem;
   }
   .login-subtitle {
-    color: #3a5a7a; font-size: .75rem; letter-spacing: 3px;
-    text-transform: uppercase; margin-bottom: 2.5rem;
+    color: #3a5a7a; font-size: .7rem; letter-spacing: 3px;
+    text-transform: uppercase;
+    display: block; text-align: center;
+    margin-bottom: 2rem;
   }
-  /* Card that holds the form — sits directly below subtitle */
+  /* Card */
   .login-card {
     background: linear-gradient(160deg, #0c1828 0%, #080e1c 100%);
-    border: 1px solid #1a3050;
-    border-radius: 18px;
-    padding: 2rem 2.4rem 1.8rem;
-    width: 340px;
+    border: 1px solid #1a3050; border-radius: 18px;
+    padding: 2rem 2rem 1.6rem;
     text-align: center;
     box-shadow: 0 0 80px rgba(0,210,255,.07),
                 0 0 1px rgba(123,47,247,.4),
                 inset 0 1px 0 rgba(255,255,255,.04);
     animation: fadeSlideUp .5s ease forwards;
   }
-  .login-card h4 {
-    color: #c8d6e5;
-    font-family: 'Orbitron', sans-serif;
-    font-size: .8rem; letter-spacing: 2px;
-    margin-bottom: 1rem;
+  .card-title {
+    color: #c8d6e5; font-family: 'Orbitron', sans-serif;
+    font-size: .78rem; letter-spacing: 2px;
+    text-align: center; margin-bottom: 1.2rem;
   }
-  /* Shrink the username / password inputs to 75% width, centred */
-  .login-card .stTextInput { width: 75% !important; margin: 0 auto !important; }
-  .login-card .stTextInput > label { font-size: .72rem !important; color: #4a6a8a !important; }
-  .login-card .stTextInput > div > div > input {
-    font-size: .8rem !important; padding: .35rem .7rem !important;
-    height: 34px !important;
+  /* Shrink inputs inside the login card column */
+  [data-testid="stVerticalBlock"] .stTextInput > div > div > input {
+    font-size: .82rem !important;
+    padding: .35rem .75rem !important;
+    height: 36px !important;
   }
-  /* ── PAGE TRANSITION  ── */
-  /* Prevents the raw white flash when streamlit rerenders */
-  [data-stale] .stApp, .stApp[data-stale] {
-    animation: fadeTransition .35s ease;
-  }
+  /* ── PAGE TRANSITION ── */
+  .stApp { animation: fadeTransition .35s ease; }
   @keyframes fadeTransition {
-    0%   { opacity: 0; transform: translateY(8px); }
+    0%   { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
   }
 
@@ -285,50 +275,64 @@ USERS = {
 }
 
 def login_page():
-    # ── outer wrapper centres everything vertically ──────────────────────────
-    st.markdown('<div class="login-center">', unsafe_allow_html=True)
-
-    # Logo + subtitle (pure HTML, always centred)
+    # Centre the form using st.columns — the only reliable centering method in Streamlit
+    # Extra top space is killed with negative margin on the whole page via CSS
     st.markdown("""
-      <div class="login-logo">RISK<span style="color:#7b2ff7">OS</span></div>
-      <div class="login-subtitle">Portfolio Intelligence Platform</div>
+    <style>
+      /* Pull the main block all the way up */
+      .block-container,
+      [data-testid="stAppViewBlockContainer"] {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+      }
+      /* Push the login column down to vertical centre */
+      [data-testid="stVerticalBlock"]:has(.login-logo) {
+        min-height: 98vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    </style>
     """, unsafe_allow_html=True)
 
-    # ── login card (centred via flex parent) ─────────────────────────────────
-    st.markdown('<div class="login-card">', unsafe_allow_html=True)
-    st.markdown("<h4>⬡ &nbsp;OPERATOR ACCESS</h4>", unsafe_allow_html=True)
+    # Horizontal centering via columns (1 : 2 : 1)
+    left, mid, right = st.columns([1, 2, 1])
 
-    # Username and password inputs live INSIDE the card, below the logo
-    username = st.text_input("Username", placeholder="e.g. demo", key="login_user",
-                             label_visibility="visible")
-    password = st.text_input("Password", placeholder="e.g. demo", type="password",
-                             key="login_pass", label_visibility="visible")
+    with mid:
+        # Logo + subtitle as HTML (no Streamlit gaps to break layout)
+        st.markdown("""
+          <span class="login-logo">RISK<span style="color:#7b2ff7">OS</span></span>
+          <span class="login-subtitle">Portfolio Intelligence Platform</span>
+        """, unsafe_allow_html=True)
 
-    login_clicked = st.button("ENTER  →", key="login_btn", use_container_width=True)
-    st.markdown(
-        "<p style='text-align:center;color:#253a52;font-size:.68rem;"
-        "margin-top:.6rem;letter-spacing:1px;'>Quick start: demo / demo</p>",
-        unsafe_allow_html=True
-    )
-    st.markdown('</div>', unsafe_allow_html=True)   # close .login-card
-    st.markdown('</div>', unsafe_allow_html=True)   # close .login-center
+        # Card wrapper start
+        st.markdown('<div class="login-card">', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">⬡ &nbsp;OPERATOR ACCESS</div>', unsafe_allow_html=True)
+
+        username = st.text_input("Username", placeholder="e.g. demo", key="login_user")
+        password = st.text_input("Password", placeholder="e.g. demo",
+                                 type="password", key="login_pass")
+        login_clicked = st.button("ENTER  →", key="login_btn", use_container_width=True)
+
+        st.markdown(
+            "<p style='text-align:center;color:#1e3a52;font-size:.67rem;"
+            "margin-top:.5rem;letter-spacing:1px;'>Quick start &nbsp;▸&nbsp; demo / demo</p>",
+            unsafe_allow_html=True
+        )
+        st.markdown('</div>', unsafe_allow_html=True)  # close .login-card
 
     if login_clicked:
         if username in USERS and USERS[username] == password:
             st.session_state.authenticated = True
             st.session_state.username = username
-            # Brief JS fade-out before rerun so the transition is smooth
-            st.markdown(
-                "<style>.stApp{animation:fadeTransition .3s ease;}</style>",
-                unsafe_allow_html=True
-            )
             st.rerun()
         else:
-            st.markdown(
-                '<div class="status-bar status-danger" style="margin-top:.8rem;">'
-                '❌ Invalid credentials — try demo / demo</div>',
-                unsafe_allow_html=True
-            )
+            with mid:
+                st.markdown(
+                    '<div class="status-bar status-danger" style="margin-top:.6rem;">'
+                    '❌ Invalid credentials — try demo / demo</div>',
+                    unsafe_allow_html=True
+                )
 
 # ════════════════════════════════════════════════════════════════════════════
 #  HELPER – dark plotly layout
