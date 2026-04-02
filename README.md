@@ -157,10 +157,6 @@ kubectl apply -f k8s/hpa.yaml
 
 ---
 
-## 👨‍💻 Author
-
-**Deepika** - [@deepika21-ctrl](https://github.com/deepika21-ctrl)
-
 ---
 
 <div align="center">
