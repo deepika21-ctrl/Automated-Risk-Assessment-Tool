@@ -44,7 +44,10 @@ st.markdown("""
 
   /* Hide streamlit chrome */
   #MainMenu, footer, header { visibility: hidden; }
-  .block-container { padding: 1.5rem 2.5rem 3rem !important; }
+  /* Kill ALL top padding so the login logo sits at the very top-centre */
+  .block-container { padding: 0 2.5rem 3rem !important; }
+  /* Also strip the inner stVerticalBlock gap that adds extra space */
+  .stVerticalBlock { gap: 0 !important; }
 
   /* ── LOGIN PAGE ── */
   /* Full-screen centred column for all login content */
@@ -53,8 +56,10 @@ st.markdown("""
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 88vh;
+    min-height: 100vh;      /* use full viewport height */
+    margin-top: -3rem;      /* pull up past block-container padding */
     gap: 0;
+    text-align: center;     /* centre all inline/text children */
   }
   .login-logo {
     font-family: 'Orbitron', sans-serif;
@@ -72,8 +77,9 @@ st.markdown("""
     background: linear-gradient(160deg, #0c1828 0%, #080e1c 100%);
     border: 1px solid #1a3050;
     border-radius: 18px;
-    padding: 2.2rem 2.6rem 2rem;
-    width: 360px;
+    padding: 2rem 2.4rem 1.8rem;
+    width: 340px;
+    text-align: center;
     box-shadow: 0 0 80px rgba(0,210,255,.07),
                 0 0 1px rgba(123,47,247,.4),
                 inset 0 1px 0 rgba(255,255,255,.04);
@@ -82,8 +88,15 @@ st.markdown("""
   .login-card h4 {
     color: #c8d6e5;
     font-family: 'Orbitron', sans-serif;
-    font-size: .85rem; letter-spacing: 2px;
-    margin-bottom: 1.2rem;
+    font-size: .8rem; letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+  /* Shrink the username / password inputs to 75% width, centred */
+  .login-card .stTextInput { width: 75% !important; margin: 0 auto !important; }
+  .login-card .stTextInput > label { font-size: .72rem !important; color: #4a6a8a !important; }
+  .login-card .stTextInput > div > div > input {
+    font-size: .8rem !important; padding: .35rem .7rem !important;
+    height: 34px !important;
   }
   /* ── PAGE TRANSITION  ── */
   /* Prevents the raw white flash when streamlit rerenders */
